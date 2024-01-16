@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat</title>
+    <link rel="icon" type="image/x-icon" href="./img/dating-app.png" />
+  </head>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+  />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="chat.css" />
+  <body>
+    <div class="row m-2 profileRow eachBlock commonHeight align-items-center">
+        <div class="d-flex justify-content-start col-6">
+            <img src="./img/dating-app.png" alt="" class="userIcon me-2">
+            <h2 class="heading">SpeakUp</h2>
+        </div>
+      <div class="dropdown d-flex justify-content-end col-6">
+        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
+          <span class="userID"></span>
+          <img src="./img/user.png" alt="" srcset="" class="userIcon mx-2"/>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li class="px-3" onclick="logout()">Logout</li>
+        </ul>
+      </div>
+    </div>
+    <div class="row m-2 commonHeight">
+      <div class="d-flex justify-content-between eachBlock align-items-center listOfUsers">
+        <div class="col-2">Chat</div>
+        <div class="col-5 d-flex justify-content-center">
+          <input type="text" placeholder="Search" class="searchUsers p-2" />
+        </div>
+        <div class="col-1 d-flex justify-content-start">
+          <img src="./img/plus.png" alt="" class="allIcons" />
+        </div>
+      </div>
+      <div class="d-flex ms-2 eachBlock align-items-center chatBlock">
+        <div class="friendPic"><img src="./img/user.png" alt="" srcset="" class="userIcon"></div>
+        <div class="friendName">
+            Friend
+            <span class="friendStatus">Online</span>
+        </div>
+        <div class="profileDiv"><button class="commonBtn profileBtn">Profile</button></div>
+        <div class="callDiv"><button class="commonBtn callBtn">Call</button></div>
+        <div class="searchChatDiv">
+          <img
+            src="./img/search-interface-symbol.png"
+            alt=""
+            class="allIcons"
+          />
+        </div>
+        <div class="moreDiv">
+          <img src="./img/more.png" alt="" class="allIcons" />
+        </div>
+      </div>
+    </div>
+    <div class="row m-2 d-flex">
+        <div class="listOfUsers eachBlock userNames p-2">
+           
+        </div>
+        <div class="chatBlock">
+            <div class="messgaheBlock">
+
+            </div>
+            <div class="inputDiv d-flex my-2">
+                <input class="message" type="text" name="message" id="message" placeholder="Write your message here...">
+                <button class="voiceBtn mx-2"><img src="./img/microphone.png" alt=""class="allIcons micIcon"></button>
+                <button class="sendBtn"><img src="./img/send.png" alt="" class="allIcons sendIcon" onclick="send()"></button>
+            </div>
+        </div>
+        
+    </div>
+  </body>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"
+  ></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+  <script src="chat.js"></script>
+</html>

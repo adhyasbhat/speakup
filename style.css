@@ -1,0 +1,67 @@
+*{
+    font-family: cursive;
+
+}
+body{
+    background: #eeeeee;
+    color: #01001a;
+}
+.eachBlock{
+    background: #f6f6f6;
+    border-radius: 0.5em;
+}
+.heading{
+    color: #DC143C;
+}
+.logo{
+    height: 3em;
+    width: 3em;
+}
+.formBlock{
+    width: 20em;
+    align-items: center;
+    justify-content: center;
+    display: grid;
+    height: 27em;
+    box-shadow: 0.5em 0.5em #DC143C;
+}
+.inputBox{
+    width: 15em;
+    display: block;
+    border: 1px solid #DC143C;
+    border-radius: 2em;
+    height: 2.5em;
+    color: #DC143C;
+}
+.inputBoxHalf{
+    width: 13em;
+}
+.submit{
+    background:#DC143C;
+    color: #f6f6f6;
+    width: 6em;
+    border: none;
+    border-radius: 2em;
+    height: 2em;
+}
+a{
+    color: #DC143C;
+}
+
+input[type="radio"] {
+    appearance: none; 
+   
+    width: 20px; 
+    height: 20px;
+    border-radius: 50%; 
+    border: 2px solid #DC143C; 
+    background-color: #f6f6f6; 
+    outline: none;
+    &:checked {
+      background-color: #DC143C;
+    }
+  }
+  .error{
+    color: #DC143C;
+    font-size: 1.4em;
+  }

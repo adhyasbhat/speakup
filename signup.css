@@ -1,0 +1,14 @@
+body{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    height: 100vh;
+}
+label {
+    /* display: inline-block; */
+    /* margin-right: 10px; Add some spacing between the radio buttons and labels */
+  }
+ .formBlock{
+    width: 30em;
+    height: 29em;
+ }
