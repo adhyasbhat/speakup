@@ -1,3 +1,5 @@
+// const { blob } = require("stream/consumers");
+
 // const { statSync } = require("fs");
 const allow = localStorage.getItem("allow");
 if (allow != "allow") {
@@ -10,8 +12,18 @@ if (!authentication) {
 const userID = document.querySelector(".userID");
 const userNames = document.querySelector(".userNames");
 const messgaheBlock = document.querySelector(".messgaheBlock");
+const chat = document.querySelector(".chat-container")
+const quote = document.querySelector(".quote")
+const friendPic = document.querySelector(".friendPic")
+const friendsName = document.querySelector(".friendsName")
+const profileDiv = document.querySelector(".profileDiv")
+const callDiv = document.querySelector(".callDiv")
+const searchChatDiv = document.querySelector(".searchChatDiv")
+const moreDiv = document.querySelector(".moreDiv")
+const home = document.querySelector(".home")
 var receiverID;
 var senderID;
+var socket = io.connect()
 fetch(`/user`, {
   headers: {
     authorization: localStorage.getItem("authorization"),
@@ -59,9 +71,9 @@ async function getUsers() {
     const hr = document.createElement("hr");
     row.append(hr);
     col.addEventListener("click", function () {
-      const friendName = document.querySelector(".friendName");
+        display()
       console.log(item.firstName);
-      friendName.innerHTML = item.firstName;
+      friendsName.innerHTML = item.firstName;
       receiverID = item._id;
       console.log(receiverID);
     });
@@ -101,6 +113,7 @@ async function send() {
   }
 }
 socket.on("loadNewChat", function (data) {
+    console.log("new chattttt")
   const receiverMsg = document.createElement("div");
   receiverMsg.classList = "eceiverMsg";
   const receiverMsgCss = document.createElement("div");
@@ -120,7 +133,7 @@ fetch(`/senderID`, {
   .then((response) => response.json())
   .then((data) => {
     senderID = data;
-    var socket = io.connect("/userNameSpace", {
+     socket = io.connect("/userNameSpace", {
       auth: {
         senderToken: data,
       },
@@ -133,3 +146,14 @@ fetch(`/senderID`, {
     });
   })
   .catch((error) => console.error("Error:", error));
+function display(){
+home.remove()
+quote.remove()
+chat.style.display = "block"
+friendPic.style.display = "block"
+friendsName.style.display = "block"
+profileDiv.style.display = "block"
+callDiv.style.display = "block"
+searchChatDiv.style.display = "block"
+moreDiv.style.display = "block"
+}

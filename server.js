@@ -221,7 +221,8 @@ nameSpace.on("connection", async function (socket) {
   });
 
   socket.on('newChat',function(data){
-    socket.broadcast.emit('loadNewChat',data)
+    console.log("entered new chat")
+    socket.emit('loadNewChat',data)
   })
 });
 app.post("/storeChat", async (req, res) => {

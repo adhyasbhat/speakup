@@ -20,6 +20,14 @@
 .chatBlock {
   width: 74.4%;
 }
+.chat-container{
+    display: none;
+}
+.home{
+    width: 74.4%;
+    height: 80vh;
+    background: #f6f6f6;
+}
 .commonBtn {
   border-radius: 2em;
   width: 5em;
@@ -36,17 +44,21 @@
 }
 .friendPic {
   width: 5%;
+  display: none;
 }
-.friendName {
+.friendsName {
   width: 70%;
+  display: none;
 }
 .profileDiv,
 .callDiv {
   width: 10%;
+  display: none;
 }
 .searchChatDiv,
 .moreDiv {
   width: 5%;
+  display: none;
 }
 .dropdown-toggle::after {
   display: none;
@@ -106,4 +118,8 @@
     display: inline;
     padding: 0.5em;
     border-radius: 1.5em; 
+}
+.quote{
+    color: #dc143c;
+    align-items: center;
 }
