@@ -10,6 +10,8 @@ if (!authentication) {
 const userID = document.querySelector(".userID");
 const userNames = document.querySelector(".userNames");
 const messgaheBlock = document.querySelector(".messgaheBlock");
+var receiverID;
+var senderID;
 fetch(`/user`, {
   headers: {
     authorization: localStorage.getItem("authorization"),
@@ -17,7 +19,6 @@ fetch(`/user`, {
 })
   .then((response) => response.json())
   .then((data) => {
-   
     userID.innerHTML = data;
   })
   .catch((error) => console.error("Error:", error));
@@ -38,37 +39,36 @@ async function getUsers() {
   const row = document.createElement("div");
   row.className = "row";
   data.users.forEach((item) => {
-     console.log(item._id)
+    console.log(item._id);
     const username = document.createElement("div");
-    username.className = "col-5 d-flex align-items-center justify-content-center";
+    username.className =
+      "col-5 d-flex align-items-center justify-content-center";
     username.innerText = item.firstName;
-    const status  = document.createElement("div")
-    status.className = "col-5 d-flex align-items-center"
-    if(item.is_online == '1'){
-        status.innerText = "Online"
+    const status = document.createElement("div");
+    status.className = "col-5 d-flex align-items-center";
+    if (item.is_online == "1") {
+      status.innerText = "Online";
+    } else {
+      status.innerText = "Offline";
     }
-    else{
-        status.innerText = "Offline"
-    }
-    const col = document.createElement("div")
-    col.className = "col-12 d-flex align-items-center receiverID"
-    status.id = item._id
-    col.append(username , status)
+    const col = document.createElement("div");
+    col.className = "col-12 d-flex align-items-center receiverID";
+    status.id = item._id;
+    col.append(username, status);
     row.append(col);
     const hr = document.createElement("hr");
     row.append(hr);
-
-        col.addEventListener("click",function(){
-            const friendName = document.querySelector(".friendName")
-            console.log(item.firstName)
-            friendName.innerHTML = item.firstName
-        })
-
+    col.addEventListener("click", function () {
+      const friendName = document.querySelector(".friendName");
+      console.log(item.firstName);
+      friendName.innerHTML = item.firstName;
+      receiverID = item._id;
+      console.log(receiverID);
+    });
   });
-
   userNames.append(row);
 }
-function send() {
+async function send() {
   const message = document.querySelector(".message");
   const senderMsg = document.createElement("div");
   senderMsg.classList = "senderMsg";
@@ -77,35 +77,59 @@ function send() {
   const senderMsg70 = document.createElement("div");
   senderMsg70.classList = "senderMsg70";
   senderMsgCss.innerHTML = message.value;
-  senderMsg.append(senderMsgCss);
-  senderMsg70.append(senderMsg);
-  messgaheBlock.append(senderMsg70);
-  message.value = "";
- }
- fetch(`/senderID`, {
+  messageToSave = message.value;
+  const response = await fetch(`/storeChat`, {
+    method: "POST",
+    body: JSON.stringify({
+      sender_id: senderID,
+      receiver_id: receiverID,
+      message: messageToSave,
+    }),
     headers: {
-      authorization: localStorage.getItem("authorization"),
+      "Content-Type": "application/json",
     },
+  });
+  const data = await response.json();
+  if (data.success) {
+    senderMsg.append(senderMsgCss);
+    senderMsg70.append(senderMsg);
+    messgaheBlock.append(senderMsg70);
+    message.value = "";
+    socket.emit("newChat", data.message);
+  } else {
+    console.log("errorr in appending");
+  }
+}
+socket.on("loadNewChat", function (data) {
+  const receiverMsg = document.createElement("div");
+  receiverMsg.classList = "eceiverMsg";
+  const receiverMsgCss = document.createElement("div");
+  receiverMsgCss.classList = "receiverMsgCss";
+  const receiverMsg70 = document.createElement("div");
+  receiverMsg70.classList = "receiverMsg70";
+  senderMsgCss.innerHTML = data.message;
+  senderMsg.append(receiverMsgCss);
+  receiverMsg70.append(receiverMsg);
+    messgaheBlock.append(senderMsg70);
+});
+fetch(`/senderID`, {
+  headers: {
+    authorization: localStorage.getItem("authorization"),
+  },
+})
+  .then((response) => response.json())
+  .then((data) => {
+    senderID = data;
+    var socket = io.connect("/userNameSpace", {
+      auth: {
+        senderToken: data,
+      },
+    });
+    socket.on("getOnlineUsers", function (data) {
+      console.log(data, "dataaa here");
+    });
+    socket.on("getOfflineUsers", function (socket) {
+      console.log(socket, "dataaa hereee");
+    });
   })
-    .then((response) => response.json())
-    .then((data) => {
-     
-     var socket = io.connect('/userNameSpace',{
-            auth:{
-                senderToken : data
-            }
-        })
-        // socket.on('getOnlineUsers',function(data){
-        //     if(status.id == data.user_id){
-        //         status.innerText = "Online"
-        //     }
-        //    console.log(data,"dataaa")
-        // })
-        // socket.on('getOfflineUsers',function(socket){
-        //     if(status.id == data.user_id){
-        //         status.innerText = "Offline"
-        //     }
-        //     console.log(socket,"dataaa")
-        //  })
-    })
-    .catch((error) => console.error("Error:", error));
+  .catch((error) => console.error("Error:", error));

@@ -1,97 +1,109 @@
-.commonHeight{
-    height: 4em;
+.commonHeight {
+  height: 4em;
 }
-.searchUsers{
-    border: 1px solid #dcdcdc;
-    border-radius: 2em;
-    height: 2em;
+.searchUsers {
+  border: 1px solid #dcdcdc;
+  border-radius: 2em;
+  height: 2em;
 }
-.allIcons{
-    height: 1.5em;
-    width: 1.5em;
+.allIcons {
+  height: 1.5em;
+  width: 1.5em;
 }
-.userIcon{
-    height: 2.5em;
-    width: 2.5em;
+.userIcon {
+  height: 2.5em;
+  width: 2.5em;
 }
-.listOfUsers{
-    width: 25%;
+.listOfUsers {
+  width: 25%;
 }
-.chatBlock{
-    width: 74.4%;
+.chatBlock {
+  width: 74.4%;
 }
-.commonBtn{
-    border-radius: 2em;
-    width: 5em;
-    height: 2em;
+.commonBtn {
+  border-radius: 2em;
+  width: 5em;
+  height: 2em;
 }
-.profileBtn{
-    border: 1px solid #dcdcdc;
-    background: #f6f6f6;
+.profileBtn {
+  border: 1px solid #dcdcdc;
+  background: #f6f6f6;
 }
-.callBtn{
-    border: none;
-    background:#01001a ;
-    color:#f6f6f6 ;
+.callBtn {
+  border: none;
+  background: #01001a;
+  color: #f6f6f6;
 }
-.friendPic{
-    width: 5%;
+.friendPic {
+  width: 5%;
 }
-.friendName{
-    width: 70%;
+.friendName {
+  width: 70%;
 }
-.profileDiv,.callDiv{
-    width: 10%;
+.profileDiv,
+.callDiv {
+  width: 10%;
 }
-.searchChatDiv,.moreDiv{
-    width: 5%;
+.searchChatDiv,
+.moreDiv {
+  width: 5%;
 }
 .dropdown-toggle::after {
-    display: none;
-  }
-  .userNames{
-    cursor: pointer;
-  }
-  .sendBtn{
-    border: none;
-    background: #DC143C;
-    border-radius: 0.3em; 
-  }
-  .voiceBtn{
-    border: #DC143C;
-    background: #f6f6f6;
-    border-radius: 0.3em; 
-  }
-  .message{
-    border: none;
-    background: #f6f6f6;
-    width: 99%;
-    height: 2.7em;
-    border-radius: 0.5em;
-    padding: 1em
-  }
-  .messgaheBlock{
-    height: 72vh;
-    width: 101.8%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 2em;
-  }
-  .senderMsgCss{
-    background-color: #DC143C;
-    color: #f6f6f6;
-    display: inline;
-    padding: 0.5em;
-    border-radius: 1.5em;
-  }
-  .senderMsg{
-    display: flex;
-    float: right;
+  display: none;
+}
+.userNames {
+  cursor: pointer;
+}
+.sendBtn {
+  border: none;
+  background: #dc143c;
+  border-radius: 0.3em;
+}
+.voiceBtn {
+  border: #dc143c;
+  background: #f6f6f6;
+  border-radius: 0.3em;
+}
+.message {
+  border: none;
+  background: #f6f6f6;
+  width: 99%;
+  height: 2.7em;
+  border-radius: 0.5em;
+  padding: 1em;
+}
+.messgaheBlock {
+  height: 72vh;
+  width: 101.8%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 2em;
+}
+.senderMsgCss {
+  background-color: #dc143c;
+  color: #f6f6f6;
+  display: inline;
+  padding: 0.5em;
+  border-radius: 1.5em;
+}
+.senderMsg {
+  display: flex;
+  float: right;
   justify-content: end;
   align-items: end;
-    width: 70%;
-  }
-/* .micIcon, .sendIcon{
-    width: 2.7em;
-    height: 2.7em;
-} */
+  width: 70%;
+}
+.receiverMsg{
+    display: flex;
+  float: left;
+  justify-content: start;
+  align-items: start;
+  width: 70%;
+}
+.receiverMsgCss{
+    background-color: #dcdcdc;
+    color: #01001a;
+    display: inline;
+    padding: 0.5em;
+    border-radius: 1.5em; 
+}
