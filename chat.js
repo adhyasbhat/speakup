@@ -58,36 +58,10 @@ async function getUsers() {
     const hr = document.createElement("hr");
     row.append(hr);
 
-    fetch(`/senderID`, {
-        headers: {
-          authorization: localStorage.getItem("authorization"),
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-         
-         var socket = io.connect('/userNameSpace',{
-                auth:{
-                    senderToken : data
-                }
-            })
-            // socket.on('getOnlineUsers',function(data){
-            //     if(status.id == data.user_id){
-            //         status.innerText = "Online"
-            //     }
-            //    console.log(data,"dataaa")
-            // })
-            // socket.on('getOfflineUsers',function(socket){
-            //     if(status.id == data.user_id){
-            //         status.innerText = "Offline"
-            //     }
-            //     console.log(socket,"dataaa")
-            //  })
-        })
-        .catch((error) => console.error("Error:", error));
-
-        col.addEventListner("click",function(){
-            
+        col.addEventListener("click",function(){
+            const friendName = document.querySelector(".friendName")
+            console.log(item.firstName)
+            friendName.innerHTML = item.firstName
         })
 
   });
@@ -108,3 +82,30 @@ function send() {
   messgaheBlock.append(senderMsg70);
   message.value = "";
  }
+ fetch(`/senderID`, {
+    headers: {
+      authorization: localStorage.getItem("authorization"),
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+     
+     var socket = io.connect('/userNameSpace',{
+            auth:{
+                senderToken : data
+            }
+        })
+        // socket.on('getOnlineUsers',function(data){
+        //     if(status.id == data.user_id){
+        //         status.innerText = "Online"
+        //     }
+        //    console.log(data,"dataaa")
+        // })
+        // socket.on('getOfflineUsers',function(socket){
+        //     if(status.id == data.user_id){
+        //         status.innerText = "Offline"
+        //     }
+        //     console.log(socket,"dataaa")
+        //  })
+    })
+    .catch((error) => console.error("Error:", error));
