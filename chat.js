@@ -1,3 +1,4 @@
+// const { statSync } = require("fs");
 const allow = localStorage.getItem("allow");
 if (allow != "allow") {
   window.location.href = "/";
@@ -16,6 +17,7 @@ fetch(`/user`, {
 })
   .then((response) => response.json())
   .then((data) => {
+   
     userID.innerHTML = data;
   })
   .catch((error) => console.error("Error:", error));
@@ -32,16 +34,62 @@ async function getUsers() {
     },
   });
   const data = await response.json();
-  console.log(data);
+  console.log(data.users);
   const row = document.createElement("div");
   row.className = "row";
-  data.usernames.forEach((item) => {
-    const col = document.createElement("div");
-    col.className = "col-12 d-flex align-items-center";
-    col.innerText = item;
+  data.users.forEach((item) => {
+     console.log(item._id)
+    const username = document.createElement("div");
+    username.className = "col-5 d-flex align-items-center justify-content-center";
+    username.innerText = item.firstName;
+    const status  = document.createElement("div")
+    status.className = "col-5 d-flex align-items-center"
+    if(item.is_online == '1'){
+        status.innerText = "Online"
+    }
+    else{
+        status.innerText = "Offline"
+    }
+    const col = document.createElement("div")
+    col.className = "col-12 d-flex align-items-center receiverID"
+    status.id = item._id
+    col.append(username , status)
     row.append(col);
     const hr = document.createElement("hr");
     row.append(hr);
+
+    fetch(`/senderID`, {
+        headers: {
+          authorization: localStorage.getItem("authorization"),
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+         
+         var socket = io.connect('/userNameSpace',{
+                auth:{
+                    senderToken : data
+                }
+            })
+            // socket.on('getOnlineUsers',function(data){
+            //     if(status.id == data.user_id){
+            //         status.innerText = "Online"
+            //     }
+            //    console.log(data,"dataaa")
+            // })
+            // socket.on('getOfflineUsers',function(socket){
+            //     if(status.id == data.user_id){
+            //         status.innerText = "Offline"
+            //     }
+            //     console.log(socket,"dataaa")
+            //  })
+        })
+        .catch((error) => console.error("Error:", error));
+
+        col.addEventListner("click",function(){
+            
+        })
+
   });
 
   userNames.append(row);
@@ -59,15 +107,4 @@ function send() {
   senderMsg70.append(senderMsg);
   messgaheBlock.append(senderMsg70);
   message.value = "";
-}
-var socket = io.connect('http://localhost:5001/userNameSpace')
-
-// socket.on('connect', function () {
-//   console.log("Connected to server");
-// });
-
-// socket.on('disconnect', function () {
-//   console.log("Disconnected from server");
-// });
-
-// var socket = io('/userNameSpace');
+ }

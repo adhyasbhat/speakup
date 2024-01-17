@@ -80,27 +80,145 @@ app.get("/user", async (req, res) => {
     }
     
   });
+  app.get("/senderID", async (req, res) => {
+    try {
+      const { email } = jwt.verify(req.headers.authorization, jwtPassword);
+      console.log(email,"email")
+      const findUserid = await Userdetails.findOne({email:email})
+      if(findUserid){
+        res.status(200).json(findUserid.id);
+      }
+      
+    } catch (error) {
+      res.status(500).json({ error: "Invalid token" });
+    }
+    
+  });
   app.get('/getAllUsers',async(req,res)=>{
     const { email } = jwt.verify(req.headers.authorization, jwtPassword);
     const users = await Userdetails.find({email: { $ne: email }});
   
     if (users.length > 0) {
-      const usernames = users.map((user) => user.firstName);
-      res.json({ usernames });
+    //   const usernames = users.map((user) => user.firstName);
+      res.json({ users });
     } else {
         res.json({ message: 'No usernames found' });
     }
    })
+   app.put("/updatePassword", async (req, res) => {
+    const { token, password } = req.body;
+    console.log("called in update");
+    console.log("token", token);
+    console.log("newPassword", password);
+  
+    try {
+      const { email } = jwt.verify(token, jwtPassword);
+      console.log("username extracted from token:", email);
+  
+      const user = await Userdetails.findOne({ email: email });
+      console.log("user in try of update ", user);
+  
+      if (!user) {
+        res.status(400).json({ error: "User not found" });
+      } else {
+        console.log("User found");
+        const hashpassword = await bcrypt.hash(password, salt);
+        console.log("Hashed password:", hashpassword);
+  
+        const updateResult = await Userdetails.updateOne(
+          { email: email },
+          { $set: { password: hashpassword } }
+        );
+  
+        console.log("Update Result:", updateResult);
+  
+        if (updateResult.modifiedCount > 0) {
+          const newToken = jwt.sign({ email: email }, jwtPassword);
+          res.status(200).json({ message: "Updated successfully", token: newToken });
+        } else {
+          res.status(400).json({ error: "Password not updated" });
+        }
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  app.post("/findAccount", async (req, res) => {
+    const { email } = req.body;
+    console.log("username of forgot password", email);
+    try {
+      const user = await Userdetails.findOne({ email: email });
+      console.log(user);
+      if (!user) {
+        res.status(400).json({ error: "user not found" });
+      } else {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          host: "smtp.gmail.com",
+          port: 587,
+          secure: false,
+          auth: {
+            user: "pokemonpodedex@gmail.com",
+            pass: "uvpesguptqmwcspb"
+          },
+        });
+        const token = jwt.sign({ email }, jwtPassword, { expiresIn: "30m" })
+        const resetpass = `http://localhost:5001/resetpassword.html?token=${token}`
+        const mailOptions = {
+          from: {
+            name: "pokemon",
+            address: "pokemonpodedex@gmail.com",
+          },
+          to: email,
+          subject: "Reset Your Password - Account Recovery",
+          text: "Dear user,\n\nWe've received a request to reset your password.",
+          html: `<p>Please click the following link to reset your password:</p><p><a href="${resetpass}">Reset Password</a></p><p>Thank you,<br>Pokedex Team</p>`,
+        };
+        const sendMail = async (transporter, mailOptions) => {
+          
+          try {
+          const token = jwt.sign({ email: email }, jwtPassword);
+            await transporter.sendMail(mailOptions);
+            console.log("mail has been sent!!");
+            res.status(200).json({message : "mail has been sent",token})
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        sendMail(transporter, mailOptions);
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+  app.get("/getGoogleCredentials/:credentials", async (req, res) => {
+    const { credentials } = req.params;
+    const { email } = jwt.decode(credentials);
+    const token = jwt.sign({ username: email }, jwtPassword);
+    const user = await Userdetails.findOne({ name: email });
+    if (!user) {
+      const db = new Userdetails({ name: email });
+      await db.save();
+    }
+    res.status(200).json({ message: "login successful", token });
+  });
    const nameSpace = io.of('/userNameSpace');
-//    console.log(nameSpace)
-   nameSpace.on('connection', function (socket) {
+   console.log(nameSpace)
+   nameSpace.on('connection', async function (socket) {
      console.log("user connected");
-   
-     socket.on('disconnect', function () {
+     var userID = socket.handshake.auth.senderToken
+  await  Userdetails.findByIdAndUpdate({_id:userID},{$set:{is_online:'1'}})
+  socket.broadcast.emit('getOnlineUsers',{user_id:userID})
+ 
+     socket.on('disconnect', async function () {
+        var userID = socket.handshake.auth.senderToken
+        await Userdetails.findByIdAndUpdate({_id:userID},{$set:{is_online:'0'}})
+        socket.broadcast.emit('getOfflineUsers',{user_id:userID})
+
        console.log("user disconnected");
      });
    });
 const port = 5001;
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running on port: ${port}`);
 });
