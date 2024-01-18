@@ -35,7 +35,7 @@ app.post("/signup", async (req, res) => {
   };
   const mongooseUserData = new Userdetails(userData);
   await mongooseUserData.save();
-  const token = jwt.sign({ email: email }, jwtPassword, { expiresIn: "1h" });
+  const token = jwt.sign({ email: email }, jwtPassword, { expiresIn: "2h" });
   return res.status(200).json({ success: "Successfull", token });
 });
 app.get("/", (req, res) => {
@@ -62,7 +62,7 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({ error: "Password doesnt match" });
   }
   const token = jwt.sign({ email: email }, jwtPassword, {
-    expiresIn: "1h",
+    expiresIn: "2h",
   });
   return res.status(200).json({ success: "Successfull", token });
 });
@@ -199,9 +199,9 @@ app.get("/getGoogleCredentials/:credentials", async (req, res) => {
   res.status(200).json({ message: "login successful", token });
 });
 const nameSpace = io.of("/userNameSpace");
-console.log(nameSpace);
+// console.log(nameSpace);
 nameSpace.on("connection", async function (socket) {
-  console.log("user connected");
+//   console.log("user connected");
   var userID = socket.handshake.auth.senderToken;
   await Userdetails.findByIdAndUpdate(
     { _id: userID },
@@ -217,12 +217,22 @@ nameSpace.on("connection", async function (socket) {
     );
     socket.broadcast.emit("getOfflineUsers", { user_id: userID });
 
-    console.log("user disconnected");
+    // console.log("user disconnected");
   });
 
   socket.on('newChat',function(data){
     console.log("entered new chat")
-    socket.emit('loadNewChat',data)
+    console.log(data)
+    socket.broadcast.emit('loadNewChat',data)
+  })
+  socket.on('existChat',async function(data){
+    console.log("old chats SID and RiD",data.sender_id,data.receiver_id)
+    var chats = await chatDetails.find({$or:[
+        {sender_id: data.sender_id, receiver_id:data.receiver_id},
+        {sender_id: data.receiver_id, receiver_id:data.sender_id}
+    ]})
+    console.log("chats in old chats",chats)
+    socket.emit('loadChats',{chats:chats})
   })
 });
 app.post("/storeChat", async (req, res) => {
@@ -235,7 +245,7 @@ app.post("/storeChat", async (req, res) => {
       message: message,
     });
     await chat.save();
-    res.status(200).json({ success: true, data: message });
+    res.status(200).json({ success: true, data: chat});
   } catch (error) {
     res.status(400).json({ success: false, msg: error.message });
   }

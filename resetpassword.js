@@ -1,15 +1,20 @@
-const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}$/;
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const urlParams = new URLSearchParams(window.location.search)
 const token = urlParams.get("token");
 const error = document.querySelector(".error")
 async function reset(){
     const newpassword = document.querySelector("#password")
     const repassword = document.querySelector("#repassword")
+    const repasswordValue = repassword.value
     const password = newpassword.value
-    if(!passwordRegex.test(password.value)){
+    const regexMatch = passwordRegex.test(password);
+    console.log(regexMatch)
+    console.log(newpassword.value,repassword.value)
+    const passwordMatch = password.value == repasswordValue
+    if(!regexMatch){
         return error.innerHTML = "Password criteria doesnt match"
     }
-    if(password.value != repassword.value){
+    if(!passwordMatch){
         return error.innerHTML = "Password doesnt match"
     }
     const request = {
