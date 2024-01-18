@@ -24,6 +24,7 @@ window.handleGoogleSignin = async (google) => {
     const { credential } = google;
     const response = await fetch(`/getGoogleCredentials/${credential}`);
     const data = await response.json();
+    console.log(data)
     if(response.ok){
       localStorage.setItem('allow','allow')
       localStorage.setItem('authorization',data.token)

@@ -10,7 +10,7 @@ async function reset(){
     const regexMatch = passwordRegex.test(password);
     console.log(regexMatch)
     console.log(newpassword.value,repassword.value)
-    const passwordMatch = password.value == repasswordValue
+    const passwordMatch = password == repasswordValue
     if(!regexMatch){
         return error.innerHTML = "Password criteria doesnt match"
     }

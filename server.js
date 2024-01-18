@@ -163,13 +163,13 @@ app.post("/findAccount", async (req, res) => {
       const resetpass = `http://localhost:5001/resetpassword.html?token=${token}`;
       const mailOptions = {
         from: {
-          name: "pokemon",
+          name: "Speakup",
           address: "pokemonpodedex@gmail.com",
         },
         to: email,
         subject: "Reset Your Password - Account Recovery",
         text: "Dear user,\n\nWe've received a request to reset your password.",
-        html: `<p>Please click the following link to reset your password:</p><p><a href="${resetpass}">Reset Password</a></p><p>Thank you,<br>Pokedex Team</p>`,
+        html: `<p>Please click the following link to reset your password:</p><p><a href="${resetpass}">Reset Password</a></p><p>Thank you,<br>SpeakUp Team</p>`,
       };
       const sendMail = async (transporter, mailOptions) => {
         try {
@@ -199,9 +199,8 @@ app.get("/getGoogleCredentials/:credentials", async (req, res) => {
   res.status(200).json({ message: "login successful", token });
 });
 const nameSpace = io.of("/userNameSpace");
-// console.log(nameSpace);
 nameSpace.on("connection", async function (socket) {
-//   console.log("user connected");
+
   var userID = socket.handshake.auth.senderToken;
   await Userdetails.findByIdAndUpdate(
     { _id: userID },
@@ -250,7 +249,7 @@ app.post("/storeChat", async (req, res) => {
     res.status(400).json({ success: false, msg: error.message });
   }
 });
-const port = 5001;
+const port = process.env.PORT || 5001;
 server.listen(port, () => {
   console.log(`Server running on port: ${port}`);
 });
