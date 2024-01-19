@@ -160,7 +160,7 @@ app.post("/findAccount", async (req, res) => {
         },
       });
       const token = jwt.sign({ email }, jwtPassword, { expiresIn: "30m" });
-      const resetpass = `http://localhost:5001/resetpassword.html?token=${token}`;
+      const resetpass = `${req.protocol}://${req.get('host')}/resetpassword.html?token=${token}`;
       const mailOptions = {
         from: {
           name: "Speakup",
