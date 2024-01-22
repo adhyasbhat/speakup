@@ -233,6 +233,8 @@ nameSpace.on("connection", async function (socket) {
     console.log("chats in old chats",chats)
     socket.emit('loadChats',{chats:chats})
   })
+
+  
 });
 app.post("/storeChat", async (req, res) => {
   const { sender_id, receiver_id, message } = req.body;

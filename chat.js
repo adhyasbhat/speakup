@@ -1,4 +1,3 @@
-
 const allow = localStorage.getItem("allow");
 if (allow != "allow") {
   window.location.href = "/";
@@ -19,6 +18,8 @@ const callDiv = document.querySelector(".callDiv")
 const searchChatDiv = document.querySelector(".searchChatDiv")
 const moreDiv = document.querySelector(".moreDiv")
 const home = document.querySelector(".home")
+const message = document.querySelector(".message")
+console.log(message)
 var receiverID;
 var senderID;
 var socket = io.connect()
@@ -122,6 +123,13 @@ function updateOfflineStatus(userId) {
   }
 }
 
+message.addEventListener("keydown",(e)=>{
+    console.log(e)
+    if(e.key == "Enter"){
+        send()
+    }
+   
+})
 async function send() {
   const message = document.querySelector(".message");
   const senderMsg = document.createElement("div");
@@ -130,48 +138,53 @@ async function send() {
   senderMsgCss.classList = "senderMsgCss";
   const senderMsg70 = document.createElement("div");
   senderMsg70.classList = "senderMsg70";
-  senderMsgCss.innerHTML = message.value;
-  messageToSave = message.value;
-  const response = await fetch(`/storeChat`, {
-    method: "POST",
-    body: JSON.stringify({
-      sender_id: senderID,
-      receiver_id: receiverID,
-      message: messageToSave,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const data = await response.json();
-  if (data.success) {
-    senderMsg.append(senderMsgCss);
-    senderMsg70.append(senderMsg);
-    messgaheBlock.append(senderMsg70);
-    message.value = "";
-    socket.emit("newChat", data);
-
+  console.log(message.value)
+  if(message.value != "")
+  {
+    senderMsgCss.innerHTML = message.value;
+    messageToSave = message.value;
+    const response = await fetch(`/storeChat`, {
+      method: "POST",
+      body: JSON.stringify({
+        sender_id: senderID,
+        receiver_id: receiverID,
+        message: messageToSave,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    if (data.success) {
+      senderMsg.append(senderMsgCss);
+      senderMsg70.append(senderMsg);
+      messgaheBlock.append(senderMsg70);
+      message.value = "";
+      socket.emit("newChat", data);
+      console.log("new chat:",data)
+      
+      socket.on("loadNewChat", function (data) {
+  
+  console.log("sID in bC:",data.data.sender_id,"Sid we have:",receiverID)
+  console.log("rID in bC:",data.data.receiver_id,"Rid we have:",senderID)
+          if(data.data.sender_id == receiverID && data.data.receiver_id == senderID){
+              const receiverMsg = document.createElement("div");
+              receiverMsg.classList = "receiverMsg my-2";
+              const receiverMsgCss = document.createElement("div");
+              receiverMsgCss.classList = "receiverMsgCss";  
+              const receiverMsg70 = document.createElement("div");
+              receiverMsg70.classList = "receiverMsg70";
+              receiverMsgCss.innerHTML = data.data.message;  
+              receiverMsg.append(receiverMsgCss);
+              receiverMsg70.append(receiverMsg);
+              messgaheBlock.append(receiverMsg70);
+          }
+          
+        });
+    } else {
+      console.log("errorr in appending");
+    }
     
-    socket.on("loadNewChat", function (data) {
-
-console.log("sID in bC:",data.data.sender_id,"Sid we have:",receiverID)
-console.log("rID in bC:",data.data.receiver_id,"Rid we have:",senderID)
-        if(data.data.sender_id == receiverID && data.data.receiver_id == senderID){
-            const receiverMsg = document.createElement("div");
-            receiverMsg.classList = "receiverMsg my-2";
-            const receiverMsgCss = document.createElement("div");
-            receiverMsgCss.classList = "receiverMsgCss";  
-            const receiverMsg70 = document.createElement("div");
-            receiverMsg70.classList = "receiverMsg70";
-            receiverMsgCss.innerHTML = data.data.message;  
-            receiverMsg.append(receiverMsgCss);
-            receiverMsg70.append(receiverMsg);
-            messgaheBlock.append(receiverMsg70);
-        }
-        
-      });
-  } else {
-    console.log("errorr in appending");
   }
   messgaheBlock.scrollTop = messgaheBlock.scrollHeight
 }
